@@ -1,5 +1,6 @@
 from app.ingestion.repo_loader import load_repo
 from app.ingestion.file_parser import parse_file
+from app.indexing.chunking import chunk_file
 
 repo_path = "C:/Users/naren/OneDrive/Desktop/di22-topicus1/src/main/java/org/Topicus"
 
@@ -11,5 +12,20 @@ for f in files:
     if p:
         parsed.append(p)
 
-print(f"Loaded {len(parsed)} files")
-print(parsed[0])
+print(f"Parsed {len(parsed)} files")
+
+chunks = []
+for f in parsed:
+    chunks.extend(chunk_file(f))
+
+print(f"Total chunks: {len(chunks)}")
+
+# Count types
+from collections import Counter
+types = Counter([c["type"] for c in chunks])
+print(types)
+
+example = chunks[0]
+print(example["type"])
+print(example["path"])
+print(example["content"][:200])
